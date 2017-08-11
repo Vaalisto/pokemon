@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, g, request
+from flask import Flask, g, request, jsonify
 
 app = Flask(__name__)
 
@@ -27,10 +27,10 @@ def close_connection(exception):
 def hello_world():
     return "Hello, world!"
 
-@app.route('/pokemons')
+@app.route('/pokemons', methods = ['GET'])
 def pokemons():
-    rows = query_db("select * from pokemons")
-    return '<br>'.join(str(row) for row in rows)
+    rows = query_db("select * from pokemon",[],one=False)
+    return jsonify({'pokemons':rows})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8080')
