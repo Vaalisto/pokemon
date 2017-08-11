@@ -1,6 +1,5 @@
 import sqlite3
-from flask import Flask
-from flask import g
+from flask import Flask, g, request
 
 app = Flask(__name__)
 
@@ -13,7 +12,7 @@ def get_db():
     return db
 
 def query_db(query, args=(), one=False):
-    cur = get_db.execute(query, args)
+    cur = get_db().execute(query, args)
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
@@ -27,6 +26,11 @@ def close_connection(exception):
 @app.route('/')
 def hello_world():
     return "Hello, world!"
+
+@app.route('/pokemons')
+def pokemons():
+    rows = query_db("select * from pokemons")
+    return '<br>'.join(str(row) for row in rows)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8080')
